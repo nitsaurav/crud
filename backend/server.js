@@ -37,7 +37,7 @@ app.get('/all_students', (req,res) => {
 });
 
 app.post('/create',(req,res) => {
-    const sql='insert into student(name,email)';
+    const sql='insert into student(name,email) values(?,?)';
 })
 
 
