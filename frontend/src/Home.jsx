@@ -5,10 +5,18 @@ import { Link } from "react-router-dom";
 function Home() {
     const [data,setData]=useState([])
  useEffect(()=>{
-    axios.get('http://localhost:8081/')
+    axios.get('http://localhost:8081/all_students')
     .then(res => setData(res.data))
     .catch(err => console.log(err));
- },[])
+ },[]);
+ const handledelete = async (id) => {
+    try{
+        await axios.delete('http://localhost:8081/delete/'+id);
+        window.location.reload();
+    }catch(err){
+        console.log(err);
+    }
+ }
  return (
     <>
     <div>
@@ -26,17 +34,17 @@ function Home() {
                         <th>Action</th>
                     </tr>
                     {data.map((student,index) => {
-                        return
+                        return(
                     <tr key={index}>
                         <td>{student.id}</td>
                         <td>{student.name}</td>
                         <td>{student.email}</td>
                         <td>
-                            <button>Edit</button>
-                            <button>Delete</button>
+                            <Link to={`update/${student.id}`}>Edit</Link>
+                            <button onClick={e => handledelete(student.id)}>Delete</button>
                         </td>
                     </tr>
-                    })}
+                    )})}
                 </tbody>
             </table>
         </div>
