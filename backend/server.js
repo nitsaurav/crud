@@ -1,11 +1,17 @@
+const path=require("path");
 const express=require("express");
 const app=express();
 const cors=require('cors');
 const mysql=require('mysql');
+const multer=require("multer");
 
 app.use(cors());
 
 app.use(express.json());
+
+const upload=multer({dest:'uploads/'});
+
+app.use(express.urlencoded({extended: false}));
 
 const db=mysql.createConnection({
     host: 'localhost',
@@ -17,12 +23,23 @@ db.connect(function(err){
     if(err){
         console.log(err);
     }else{
-        console.log('connection succsful')
+        console.log('connection succsful');
     }
 });
 
+const storage=multer.diskStorage({
+    destination: function(req,file,cb){
+        return cb(null, "/uploads");
+    },
+    filename: function(req, file, cb){
+        return cb(null,`${Date.now()}-${file.originalname}`);
+    },
+});
+
+const uploads=multer({});
+
 app.get('/',(req,res) => {
-    res.json('hlo first')
+    res.json('hlo first');
 });
 
 app.get('/all_students', (req,res) => {
@@ -31,7 +48,7 @@ app.get('/all_students', (req,res) => {
         if(err){
             return res.json('Error');
         }else{
-            return res.json(data)
+            return res.json(data);
         }
     });
 });
