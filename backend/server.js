@@ -36,7 +36,9 @@ const storage=multer.diskStorage({
     },
 });
 
-const uploads=multer({});
+const uploads=multer({
+    storage: storage
+}).single('doc');
 
 app.get('/',(req,res) => {
     res.json('hlo first');
@@ -53,11 +55,12 @@ app.get('/all_students', (req,res) => {
     });
 });
 
-app.post('/create', (req,res) => {
-    const sql='insert into student (`name`,`email`) values(?)';
+app.post('/create', uploads, (req,res) => {
+    const sql='insert into student (`name`,`email`,`user_file`) values(?)';
     const values=[
         req.body.name,
         req.body.email,
+        req.files.doc,
     ]
     db.query(sql,[values], (err,data) => {
         if(err){
